@@ -13,6 +13,7 @@ load_dotenv()
 PRAKTIKUM_TOKEN = os.getenv('PRAKTIKUM_TOKEN')
 TELEGRAM_TOKEN = os.getenv('TELEGRAM_TOKEN')
 CHAT_ID = os.getenv('TELEGRAM_CHAT_ID')
+url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
 
 bot = Bot(token=TELEGRAM_TOKEN)
 
@@ -45,29 +46,32 @@ def parse_homework_status(homework):
         return f'У вас проверили работу "{homework_name}"!\n\n{msg[status]}'
 
 
+def send_message(message):
+    return bot.send_message(chat_id=CHAT_ID, text=message)
+
+
 def get_homeworks(current_timestamp):
-    url = 'https://praktikum.yandex.ru/api/user_api/homework_statuses/'
     headers = {'Authorization': f'OAuth {PRAKTIKUM_TOKEN}'}
+    if current_timestamp is None:
+        current_timestamp = int(time.time())
     payload = {'from_date': current_timestamp}
     try:
         homework_statuses = requests.get(url,
                                          headers=headers,
                                          params=payload)
-        # homework_statuses.raise_for_status()
         return homework_statuses.json()
     except HTTPError as http_err:
-        return logger.error(f'HTTP error: {http_err}')
+        msg = f'HTTP error: {http_err}'
+        send_message(msg)
+        return logger.error(msg)
     except Exception as err:
-        return logger.error(f'Other error: {err}')
-
-
-def send_message(message):
-    return bot.send_message(chat_id=CHAT_ID, text=message)
+        msg = f'Other error: {err}'
+        send_message(msg)
+        return logger.error(msg)
 
 
 def main():
     current_timestamp = int(time.time())  # Начальное значение timestamp
-    # current_timestamp = 1622505600
     while True:
         try:
             logger.debug('Бот запущен')
@@ -79,7 +83,7 @@ def main():
         except Exception as e:
             msg_error = f'Бот упал с ошибкой: {e}'
             logger.error(msg_error)
-            bot.send_message(chat_id=CHAT_ID, text=msg_error)
+            send_message(msg_error)
             time.sleep(10)
 
 
