@@ -35,13 +35,17 @@ def parse_homework_status(homework):
     """В зависимости от статуса ф-ция формирует сообщение"""
     homework_name = homework.get('homework_name')
     if homework_name is None:
-        return logger.error('Отсутствует имя проекта')
+        msg = 'Отсутствует имя проекта'
+        logger.error('Отсутствует имя проекта')
+        raise KeyError(msg)
     status = homework.get('status')
     msg = {'rejected': 'К сожалению, в работе нашлись ошибки.',
            'approved': 'Ревьюеру всё понравилось, работа зачтена!',
            'reviewing': 'Работа взята в ревью'}
     if status not in msg:
-        logger.error('Неизвестный статус работы!')
+        msg = 'Неизвестный статус работы'
+        logger.error(msg)
+        raise KeyError(msg)
     else:
         return f'У вас проверили работу "{homework_name}"!\n\n{msg[status]}'
 
@@ -62,12 +66,12 @@ def get_homeworks(current_timestamp):
         return homework_statuses.json()
     except HTTPError as http_err:
         msg = f'HTTP error: {http_err}'
-        send_message(msg)
-        return logger.error(msg)
+        logger.error(msg)
+        raise HTTPError(msg)
     except Exception as err:
         msg = f'Other error: {err}'
-        send_message(msg)
-        return logger.error(msg)
+        logger.error(msg)
+        raise Exception(msg)
 
 
 def main():
