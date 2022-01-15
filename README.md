@@ -7,6 +7,6 @@
 - "К сожалению, в работе нашлись ошибки".
 
 ## Переменные окружения:
-- PRACTICUM_TOKEN (получить токен https://oauth.yandex.ru/authorize?response_type=token&client_id=<client_id>)
-- TELEGRAM_TOKEN (создание бота @BotFather)
-- TELEGRAM_CHAT_ID (узнать свой id - @userinfobot)
+- ⚡ PRACTICUM_TOKEN (получить токен https://oauth.yandex.ru/authorize?response_type=token&client_id=<client_id>)
+- ⚡ TELEGRAM_TOKEN (создание бота @BotFather)
+- ⚡ TELEGRAM_CHAT_ID (узнать свой id - @userinfobot)
